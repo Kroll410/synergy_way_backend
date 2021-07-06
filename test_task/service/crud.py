@@ -1,24 +1,35 @@
 from django.db.models import ForeignKey
-from .helpers import validate_email
-
+from .helpers import valid_email
+from django.utils.timezone import now
 
 def update_table(data: dict, model):
     try:
         record = model.objects.get(id=data.pop('id'))
+        print(data, model)
         for field in model._meta.fields:
+
             if field.name == 'id':
                 continue
-            if isinstance(field, ForeignKey):
+
+            elif field.name == 'date_modified':
+                setattr(record, field.name, now())
+
+            elif isinstance(field, ForeignKey):
                 fk_model = field.target_field.model
-                setattr(record, field.name, fk_model.objects.get(name=data[field.name].capitalize()))
+                fk_value_from_data = data[field.name]
+                fk_object = fk_model.objects.get(name=fk_value_from_data)
+                setattr(record, field.name, fk_object)
+
+            elif field.name == 'email':
+                if valid_email(data[field.name]):
+                    setattr(record, field.name, data[field.name])
+                else:
+                    raise ValueError
             else:
-                print(field.name)
-                if field.name == 'email':
-                    validate_email(data[field.name])
                 setattr(record, field.name, data[field.name])
-        record.save()
     except:
         return False
+    record.save()
     return True
 
 
