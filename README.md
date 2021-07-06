@@ -38,7 +38,7 @@ To install this part u need continue next steps:
     docker stats
 ```
 
-### Now uou have to build the front-end part of project, check README file in the [front-end part repository](https://github.com/Kroll410/synergy_way_frontend)
+### Now you have to build the front-end part of project, check README file in the [front-end part repository](https://github.com/Kroll410/synergy_way_frontend)
 
 
 
